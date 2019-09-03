@@ -85,6 +85,14 @@ export class MasterForm extends Component {
                 isValid = false
                 errors.emailError = 'Email is a mandatory field'
             }
+            if (this.state.currentStep === 3 && parseInt(this.state.mobile.length) !== 10) {
+                isValid = false
+                errors.mobileError = 'Mobile Number should be 10 digits'
+            }
+            if (this.state.currentStep === 3 && this.state.email.indexOf('@')===-1) {
+                isValid = false
+                errors.emailError = 'Email should be in proper format'
+            }
             if (this.state.currentStep === 2 && this.state.firstName === '') {
                 isValid = false
                 errors.emailError = 'First Name is a mandatory field'
@@ -93,10 +101,11 @@ export class MasterForm extends Component {
                 isValid = false
                 errors.emailError = 'Last Name is a mandatory field'
             }
+            
 
             if (this.state.currentStep === 3 && this.state.mobile === '') {
                 isValid = false
-                errors.emailError = 'Mobile number is a mandatory field'
+                errors.mobileError = 'Mobile number is a mandatory field'
             }
 
             if (this.state.currentStep === 2 && this.state.dob === '') {
@@ -271,6 +280,7 @@ export class MasterForm extends Component {
                         <span className="text-danger " ><small>{this.state.firstNameError}</small></span>
                         <span className="text-danger " ><small>{this.state.lastNameError}</small></span>
                         <span className="text-danger " ><small>{this.state.dobError}</small></span>
+                        <span className="text-danger " ><small>{this.state.mobileError}</small></span>
                         <form className="master" onSubmit={this.handleSubmit}>
                             <Step1
                                 currentStep={this.state.currentStep}

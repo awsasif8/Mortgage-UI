@@ -62,6 +62,7 @@ export class Transaction extends Component {
                                 <thead >
                                     <tr>
                                         <th scope="col">Transaction Date</th>
+                                        <th scope="col">Transaction Time</th>
                                         <th scope="col">Amount</th>
                                         <th scope="col">Description</th>
                                         <th scope="col">Type</th>
@@ -73,6 +74,7 @@ export class Transaction extends Component {
                                         this.state.transactionStatement.map((each, index) => (
                                             <tr className="datarow" scope="row">
                                                 <td> {each.transactionDate.slice(0,10)}</td>
+                                                <td> {each.transactionDate.slice(11,18)}</td>
                                                 <td> {each.transactionAmount}</td>
                                                 <td> {each.description}</td>
                                                 <td> {each.transactionType}</td>
