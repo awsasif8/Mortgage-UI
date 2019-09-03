@@ -22,14 +22,20 @@ export class Mortgage extends Component {
         this.setState({
             viewStatement: true
         })
-        axios.get(`${config.urlCharan}/statements/MAGGIE290`)
+        axios.get(`${config.url}/statements/${this.state.mortgageAccNo}`)
         .then(res => {
             console.log("res inside get statemnet", res)
-            this.setState({
-                transactionStatement: res.data.data
-            }, () => {
-                console.log("all stock after set state", this.state.transactionAccNo)
-            });
+            if(res.data.data){
+                this.setState({
+                    transactionStatement: res.data.data
+                }, () => {
+                    console.log("all stock after set state", this.state.transactionAccNo)
+                });
+
+            } else{
+                swal(`No Statements available`)
+            }
+            
         }).catch(err=>{
             swal(`${err}`)
         })
@@ -76,7 +82,7 @@ export class Mortgage extends Component {
                                     {
                                         this.state.transactionStatement.map((each, index) => (
                                             <tr className="datarow" scope="row">
-                                                <td> {each.transactionDate}</td>
+                                                <td> {each.transactionDate.slice(0,10)}</td>
                                                 <td> {each.transactionAmount}</td>
                                                 <td> {each.description}</td>
                                                 <td> {each.transactionType}</td>

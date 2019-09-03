@@ -21,7 +21,7 @@ export class Step1 extends Component {
                         <option value="refurbish">Buy a refurbished home</option>
                     </select>
                     <br></br>
-                <label htmlFor="propertycost">How much do you think the property will cost?</label>
+                <label htmlFor="propertycost">How much do you think the property will cost(In Euros))</label>
                 <input
                     className="form-control"
                     id="propertycost"
@@ -32,7 +32,7 @@ export class Step1 extends Component {
                     onChange={this.props.handleChange} // Prop: Puts data into state
                 />
                 <br></br>
-                <label htmlFor="deposit">How much deposit you have?</label>
+                <label htmlFor="deposit">How much deposit you have(In Euros)?</label>
                 <input
                     className="form-control"
                     id="deposit"

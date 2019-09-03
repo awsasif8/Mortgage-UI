@@ -33,7 +33,7 @@ export class Transaction extends Component {
         this.setState({
             viewStatement: true
         })
-        axios.get(`${config.urlCharan}/statements/MAGGIE290`)
+        axios.get(`${config.url}/statements/${this.state.transactionAccNo}`)
             .then(res => {
                 console.log("res inside get statemnet", res)
                 this.setState({
@@ -72,7 +72,7 @@ export class Transaction extends Component {
                                     {
                                         this.state.transactionStatement.map((each, index) => (
                                             <tr className="datarow" scope="row">
-                                                <td> {each.transactionDate}</td>
+                                                <td> {each.transactionDate.slice(0,10)}</td>
                                                 <td> {each.transactionAmount}</td>
                                                 <td> {each.description}</td>
                                                 <td> {each.transactionType}</td>

@@ -6,6 +6,8 @@ import './MasterForm.css'
 import config from '../../config.json'
 import axios from 'axios'
 import swal from 'sweetalert'
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+
 export class MasterForm extends Component {
     constructor(props) {
         super(props)
@@ -32,7 +34,8 @@ export class MasterForm extends Component {
             email: '',
             emailError: '',
             occupation: '',
-            occupationError: ''
+            occupationError: '',
+            loading: false
 
         }
         this.handleChange = this.handleChange.bind(this);
@@ -40,64 +43,69 @@ export class MasterForm extends Component {
         this._next = this._next.bind(this)
         this._prev = this._prev.bind(this)
     }
-    
-    get_age(time){
-        var MILLISECONDS_IN_A_YEAR = 1000*60*60*24*365;
+
+    get_age(time) {
+        var MILLISECONDS_IN_A_YEAR = 1000 * 60 * 60 * 24 * 365;
         var date_array = time.split('-')
-        var years_elapsed = (new Date() - new Date(date_array[0],date_array[1],date_array[2]))/(MILLISECONDS_IN_A_YEAR);
-        return years_elapsed; 
+        var years_elapsed = (new Date() - new Date(date_array[0], date_array[1], date_array[2])) / (MILLISECONDS_IN_A_YEAR);
+        return years_elapsed;
     }
     validate() {
         let isValid = true
         const errors = {
-            propertycostError:'',
-            depositError:'',
+            propertycostError: '',
+            depositError: '',
             occupationError: '',
             ageError: '',
-            emailError:'',
-            mobileError:'',
+            emailError: '',
+            mobileError: '',
             lastNameError: '',
             firstNameError: '',
-            emailError:'',
-            mobileError: ''
+            emailError: '',
+            mobileError: '',
+            dobError:''
         }
         return new Promise((resolve, reject) => {
             if (this.state.propertycost === '' || this.state.propertycost < 100000) {
                 isValid = false
-                errors.propertycostError='Property cost should be more than 1 lakh'
-            } else if(this.state.deposit === '' || this.state.deposit <0){
+                errors.propertycostError = 'Property cost should be more than 1 lakh'
+            } else if (this.state.deposit === '' || this.state.deposit < 0) {
                 isValid = false
-                errors.depositError= 'Deposit amount should be greater than zero'
-            } else if(parseInt(this.state.deposit) >= parseInt(this.state.propertycost)){
+                errors.depositError = 'Deposit amount should be greater than zero'
+            } else if (parseInt(this.state.deposit) >= parseInt(this.state.propertycost)) {
                 isValid = false
-                errors.depositError= 'Deposit amount cannot be more than property cost'
-            } 
+                errors.depositError = 'Deposit amount cannot be more than property cost'
+            }
 
-            if(this.state.currentStep === 2 && this.state.occupation===''){
+            if (this.state.currentStep === 2 && this.state.occupation === '') {
                 isValid = false
-                errors.occupationError= 'Occupation is a mandatory field'
-            } 
-            if(this.state.currentStep === 3 && this.state.email===''){
+                errors.occupationError = 'Occupation is a mandatory field'
+            }
+            if (this.state.currentStep === 3 && this.state.email === '') {
                 isValid = false
-                errors.emailError='Email is a mandatory field'
-            } 
-            if(this.state.currentStep === 2 && this.state.firstName===''){
+                errors.emailError = 'Email is a mandatory field'
+            }
+            if (this.state.currentStep === 2 && this.state.firstName === '') {
                 isValid = false
-                errors.emailError='First Name is a mandatory field'
-            } 
-            if(this.state.currentStep === 2 && this.state.lastName===''){
+                errors.emailError = 'First Name is a mandatory field'
+            }
+            if (this.state.currentStep === 2 && this.state.lastName === '') {
                 isValid = false
-                errors.emailError='Last Name is a mandatory field'
-            } 
-           
-            if(this.state.currentStep === 3 && this.state.mobile===''){
+                errors.emailError = 'Last Name is a mandatory field'
+            }
+
+            if (this.state.currentStep === 3 && this.state.mobile === '') {
                 isValid = false
-                errors.emailError='Mobile number is a mandatory field'
-            } 
-           
-            if(parseInt(this.get_age(this.state.dob))<18){
+                errors.emailError = 'Mobile number is a mandatory field'
+            }
+
+            if (this.state.currentStep === 2 && this.state.dob === '') {
                 isValid = false
-                errors.ageError='Age should be more than 18 years to grant mortgage '
+                errors.dobError = 'Date Of Birth is a mandatory field'
+            }
+            if (parseInt(this.get_age(this.state.dob)) < 18) {
+                isValid = false
+                errors.ageError = 'Age should be more than 18 years to grant mortgage '
             }
             this.setState({
                 ...this.state,
@@ -121,9 +129,9 @@ export class MasterForm extends Component {
     // Trigger an alert on form submission
     handleSubmit = (event) => {
         event.preventDefault()
-        this.validate().then(res=>{
-            if(res){
-                let customer={
+        this.validate().then(res => {
+            if (res) {
+                let customer = {
                     email: this.state.email,
                     mobile: this.state.mobile,
                     firstName: this.state.firstName,
@@ -135,27 +143,34 @@ export class MasterForm extends Component {
                     propertyCost: this.state.propertycost
                 }
                 console.log("Customer details", customer)
-                this.getData(customer).then((response) => {
-                    console.log(response)
-                    if (response.status === 201 ) {
-                       swal(`Congratulations. Your mortgage has been granted .Please find below the details.
-                            Your Login ID: ${response.data.customerId} 
-                            Your password is: ${response.data.password}
-                            Your Mortgage Account Number is: ${response.data.mortgageAcc}
-                            Your Transaction Account Number is: ${response.data.transactionAcc}`)
-                    }
-                }).catch(err => {
-                    swal(`Error in login ${err}`)
+                this.setState({ loading: true }, () => {
+                    this.getData(customer).then((response) => {
+                        console.log(response)
+                        if (response.status === 201) {
+                            this.setState({ loading: false })
+                            swal(`Congratulations. Your mortgage has been granted .Please find below the details.
+                                Your Login ID: ${response.data.customerId} 
+                                Your password is: ${response.data.password}
+                                Your Mortgage Account Number is: ${response.data.mortgageAcc}
+                                Your Transaction Account Number is: ${response.data.transactionAcc}`)
+                        }
+                    }).catch(err => {
+                        this.setState({ loading: false })
+                        swal(`Error in login ${err}`)
+
+                    });
+
                 });
-    
+
+
 
             }
-            
+
         })
     }
     getData(customer) {
         return new Promise((resolve, reject) => {
-            axios.post(`${config.url}/register`, customer)
+            axios.post(`${config.urlDhana}/register`, customer)
                 .then(res => {
                     return resolve(res)
                 }).catch(err => {
@@ -172,12 +187,12 @@ export class MasterForm extends Component {
                 currentStep = currentStep >= 2 ? 3 : currentStep + 1
                 this.setState({
                     currentStep: currentStep,
-                    propertycostError:'',
-                    depositError:'',
+                    propertycostError: '',
+                    depositError: '',
                     occupationError: '',
                     ageError: '',
-                    emailError:'',
-                    mobileError:''
+                    emailError: '',
+                    mobileError: ''
                 })
             }
         })
@@ -222,10 +237,10 @@ export class MasterForm extends Component {
             )
         }
         // ...else render nothing
-      
 
-         // If the current step is not 1, then render the "previous" button
-         if (currentStep == 3) {
+
+        // If the current step is not 1, then render the "previous" button
+        if (currentStep == 3) {
             return (
                 <button
                     className="btn btn-primary float-right"
@@ -238,44 +253,53 @@ export class MasterForm extends Component {
     }
 
     render() {
+        const { loading } = this.state;
         return (
-            <React.Fragment>
-                <h2>Signup </h2>
-                <p><h4> Step {this.state.currentStep}</h4> </p>
-                <span className="text-danger " ><small>All fields are mandatory</small></span><br></br>
-                <span className="text-danger " ><small>{this.state.depositError}</small></span>
-                <span className="text-danger " ><small>{this.state.occupationError}</small></span>
-                <span className="text-danger " ><small>{this.state.propertycostError}</small></span>
-                <span className="text-danger " ><small>{this.state.ageError}</small></span>
-                <span className="text-danger " ><small>{this.state.emailError}</small></span>
-                <span className="text-danger " ><small>{this.state.firstNameError}</small></span>
-                <span className="text-danger " ><small>{this.state.lastNameError}</small></span>
-                <form className="master" onSubmit={this.handleSubmit}>
-                    <Step1
-                        currentStep={this.state.currentStep}
-                        handleChange={this.handleChange}
-                        mortgageType={this.state.mortgageType}
-                        propertycost={this.state.propertycost}
-                        deposit={this.state.deposit}
-                    />
-                    <Step2
-                        currentStep={this.state.currentStep}
-                        handleChange={this.handleChange}
-                        occupation={this.state.occupation}
-                        firstName={this.state.firstName}
-                        lastName={this.state.lastName}
-                        dob={this.state.dob}
-                    />
-                    <Step3
-                        currentStep={this.state.currentStep}
-                        handleChange={this.handleChange}
-                        mobile={this.state.mobile}
-                        email={this.state.email}
-                    />
-                    {this.previousButton}
-                    {this.nextButton}
-                </form>
-            </React.Fragment>
+            <div>
+
+
+                {loading ? <LoadingSpinner /> : (
+                    <React.Fragment>
+                        <h2>Signup </h2>
+                        <p><h4> Step {this.state.currentStep}</h4> </p>
+                        <span className="text-danger " ><small>All fields are mandatory</small></span><br></br>
+                        <span className="text-danger " ><small>{this.state.depositError}</small></span>
+                        <span className="text-danger " ><small>{this.state.occupationError}</small></span>
+                        <span className="text-danger " ><small>{this.state.propertycostError}</small></span>
+                        <span className="text-danger " ><small>{this.state.ageError}</small></span>
+                        <span className="text-danger " ><small>{this.state.emailError}</small></span>
+                        <span className="text-danger " ><small>{this.state.firstNameError}</small></span>
+                        <span className="text-danger " ><small>{this.state.lastNameError}</small></span>
+                        <span className="text-danger " ><small>{this.state.dobError}</small></span>
+                        <form className="master" onSubmit={this.handleSubmit}>
+                            <Step1
+                                currentStep={this.state.currentStep}
+                                handleChange={this.handleChange}
+                                mortgageType={this.state.mortgageType}
+                                propertycost={this.state.propertycost}
+                                deposit={this.state.deposit}
+                            />
+                            <Step2
+                                currentStep={this.state.currentStep}
+                                handleChange={this.handleChange}
+                                occupation={this.state.occupation}
+                                firstName={this.state.firstName}
+                                lastName={this.state.lastName}
+                                dob={this.state.dob}
+                            />
+                            <Step3
+                                currentStep={this.state.currentStep}
+                                handleChange={this.handleChange}
+                                mobile={this.state.mobile}
+                                email={this.state.email}
+                            />
+                            {this.previousButton}
+                            {this.nextButton}
+                        </form>
+                    </React.Fragment>
+                )
+                }
+            </div>
         )
     }
 }

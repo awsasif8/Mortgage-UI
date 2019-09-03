@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import { shallow } from 'enzyme';
-import Login from '../../Components/Login/Login';
+
 import Logout from './Logout';
 describe('when the login component is called',()=>{
     let wrapper;
@@ -15,7 +15,7 @@ describe('when the login component is called',()=>{
  
     describe('When first button is cliked', () => {
         it('should have called handle submit function', () => {
-          const comp = shallow(<Login />);
+          const comp = shallow(<Logout />);
           const spy = jest.spyOn(comp.instance(), 'handleSubmit');
           comp.instance().forceUpdate();
           comp.find('#submit').simulate('click',{
