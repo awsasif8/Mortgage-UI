@@ -3,23 +3,35 @@ import Step1 from '../Step1/Step1'
 import Step2 from '../Step2/Step2'
 import Step3 from '../Step3/Step3'
 import './MasterForm.css'
+import config from '../../config.json'
+import axios from 'axios'
 export class MasterForm extends Component {
     constructor(props) {
         super(props)
         this.state = {
             currentStep: 1, // Default is Step 1
             email: '',
-            username: '',
-            password: '',
+            emailError: '',
             propertycost: '',
+            propertycostError: '',
             mortgageType: 'newhome',
+            mortgageTypeError: '',
             deposit: '',
-            mobileNo: '',
+            depositError: '',
+            mobile: '',
+            mobileError: '',
             firstName: '',
+            firstNameError: '',
             lastName: '',
+            lastNameError: '',
             dob: '',
+            dobError: '',
+            age: '',
+            ageError: '',
             email: '',
-            occupation: 'employed'
+            emailError: '',
+            occupation: '',
+            occupationError: ''
 
         }
         this.handleChange = this.handleChange.bind(this);
@@ -28,12 +40,80 @@ export class MasterForm extends Component {
         this._prev = this._prev.bind(this)
     }
     
+    get_age(time){
+        var MILLISECONDS_IN_A_YEAR = 1000*60*60*24*365;
+        var date_array = time.split('-')
+        var years_elapsed = (new Date() - new Date(date_array[0],date_array[1],date_array[2]))/(MILLISECONDS_IN_A_YEAR);
+        return years_elapsed; 
+    }
+    validate() {
+        console.log("Age",parseInt(this.get_age(this.state.dob)))
+        let isValid = true
+        const errors = {
+            propertycostError:'',
+            depositError:'',
+            occupationError: '',
+            ageError: '',
+            emailError:'',
+            mobileError:'',
+            lastNameError: '',
+            firstNameError: '',
+            emailError:'',
+            mobileError: ''
+        }
+        return new Promise((resolve, reject) => {
+            if (this.state.propertycost === '' || this.state.propertycost < 100000) {
+                isValid = false
+                errors.propertycostError='Property cost should be more than 1 lakh'
+            } else if(this.state.deposit === '' || this.state.deposit <0){
+                isValid = false
+                errors.depositError= 'Deposit amount should be greater than zero'
+            } else if(parseInt(this.state.deposit) >= parseInt(this.state.propertycost)){
+                isValid = false
+                errors.depositError= 'Deposit amount cannot be more than property cost'
+            } 
+
+            if(this.state.currentStep === 2 && this.state.occupation===''){
+                isValid = false
+                errors.occupationError= 'Occupation is a mandatory field'
+            } 
+            if(this.state.currentStep === 3 && this.state.email===''){
+                isValid = false
+                errors.emailError='Email is a mandatory field'
+            } 
+            if(this.state.currentStep === 2 && this.state.firstName===''){
+                isValid = false
+                errors.emailError='First Name is a mandatory field'
+            } 
+            if(this.state.currentStep === 2 && this.state.lastName===''){
+                isValid = false
+                errors.emailError='Last Name is a mandatory field'
+            } 
+           
+            if(this.state.currentStep === 3 && this.state.mobile===''){
+                isValid = false
+                errors.emailError='Mobile number is a mandatory field'
+            } 
+           
+            if(parseInt(this.get_age(this.state.dob))<18){
+                isValid = false
+                errors.ageError='Age should be more than 18 years to grant mortgage '
+            }
+            this.setState({
+                ...this.state,
+                ...errors
+            })
+            return resolve(isValid)
+        })
+
+    }
+
     // Use the submitted data to set the state
     handleChange(event) {
-        const {name, value} = event.target
+        const { name, value } = event.target
         this.setState({
             [name]: value
-        },()=>{
+        }, () => {
             console.log("state", this.state)
         })
     }
@@ -41,20 +121,49 @@ export class MasterForm extends Component {
     // Trigger an alert on form submission
     handleSubmit = (event) => {
         event.preventDefault()
-        const { email, username, password } = this.state
-        alert(`Your registration detail: \n 
-      Email: ${email} \n 
-      Username: ${username} \n
-      Password: ${password}`)
-    }
+        this.validate().then(res=>{
+            let customer={
+                email: this.state.email,
+                mobile: this.state.mobile,
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                Dob: this.state.dob,
+                occupation: this.state.occupation,
+                mortgageType: this.state.mortgageType,
+                propertycost: this.state.propertycost
+            }
 
-    _next() {
-        let currentStep = this.state.currentStep
-        // If the current step is 1 or 2, then add one on "next" button click
-        currentStep = currentStep >= 2 ? 3 : currentStep + 1
-        this.setState({
-            currentStep: currentStep
         })
+    }
+    getData(user) {
+        return new Promise((resolve, reject) => {
+            axios.post(`${config.url}/login`, user)
+                .then(res => {
+                    return resolve(res)
+                }).catch(err => {
+                    return reject(err)
+                })
+        });
+
+    }
+    _next() {
+        this.validate().then((res) => {
+            if (res) {
+                let currentStep = this.state.currentStep
+                // If the current step is 1 or 2, then add one on "next" button click
+                currentStep = currentStep >= 2 ? 3 : currentStep + 1
+                this.setState({
+                    currentStep: currentStep,
+                    propertycostError:'',
+                    depositError:'',
+                    occupationError: '',
+                    ageError: '',
+                    emailError:'',
+                    mobileError:''
+                })
+            }
+        })
+
     }
     _prev() {
         let currentStep = this.state.currentStep
@@ -95,32 +204,57 @@ export class MasterForm extends Component {
             )
         }
         // ...else render nothing
+      
+
+         // If the current step is not 1, then render the "previous" button
+         if (currentStep == 3) {
+            return (
+                <button
+                    className="btn btn-primary float-right"
+                    type="button" onClick={this.handleSubmit}>
+                    Submit
+        </button>
+            )
+        }
         return null;
     }
+
     render() {
         return (
             <React.Fragment>
                 <h2>Signup </h2>
                 <p><h4> Step {this.state.currentStep}</h4> </p>
-
-                <form  className="master" onSubmit={this.handleSubmit}>
+                <span className="text-danger " ><small>{this.state.depositError}</small></span>
+                <span className="text-danger " ><small>{this.state.occupationError}</small></span>
+                <span className="text-danger " ><small>{this.state.propertycostError}</small></span>
+                <span className="text-danger " ><small>{this.state.ageError}</small></span>
+                <span className="text-danger " ><small>{this.state.emailError}</small></span>
+                <span className="text-danger " ><small>{this.state.firstNameError}</small></span>
+                <span className="text-danger " ><small>{this.state.lastNameError}</small></span>
+                <form className="master" onSubmit={this.handleSubmit}>
                     <Step1
                         currentStep={this.state.currentStep}
                         handleChange={this.handleChange}
-                        email={this.state.email}
+                        mortgageType={this.state.mortgageType}
+                        propertycost={this.state.propertycost}
+                        deposit={this.state.deposit}
                     />
                     <Step2
                         currentStep={this.state.currentStep}
                         handleChange={this.handleChange}
-                        username={this.state.username}
+                        occupation={this.state.occupation}
+                        firstName={this.state.firstName}
+                        lastName={this.state.lastName}
+                        dob={this.state.dob}
                     />
                     <Step3
                         currentStep={this.state.currentStep}
                         handleChange={this.handleChange}
-                        password={this.state.password}
+                        mobile={this.state.mobile}
+                        email={this.state.email}
                     />
-                     {this.previousButton}
-                     {this.nextButton}
+                    {this.previousButton}
+                    {this.nextButton}
                 </form>
             </React.Fragment>
         )

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 export class Step2 extends Component {
+    
     render() {
         if (this.props.currentStep !== 2) { // Prop: The current step
             return null
@@ -8,13 +9,15 @@ export class Step2 extends Component {
         // The markup for the Step 1 UI
         return (
             <div className="form-group">
-                <label htmlFor="propertycost">Occupation</label>
+                <label htmlFor="occupation">Occupation</label>
                 <select
                     className="form-control" 
                     onChange={this.props.handleChange}
                     id="occupation"
+                    name="occupation"
                     value={this.props.occupation}
                     >
+                    <option value="">Select</option>
                     <option value="employed">Employed</option>
                     <option value="business">Private</option>
                 </select>

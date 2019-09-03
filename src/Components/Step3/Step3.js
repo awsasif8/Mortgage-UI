@@ -8,7 +8,7 @@ export class Step3 extends Component {
           // The markup for the Step 1 UI
           return(
             <div className="form-group">
-              <label htmlFor="email">password</label>
+              <label htmlFor="email">Email</label>
               <input
                 className="form-control"
                 id="email"
@@ -17,6 +17,16 @@ export class Step3 extends Component {
                 placeholder="Enter email"
                 value={this.props.email} // Prop: The email input data
                 onChange={this.props.handleChange} // Prop: Puts data into state
+              /><br></br>
+               <label htmlFor="mobile">Mobile Number</label>
+              <input
+                className="form-control"
+                id="mobile"
+                name="mobile"
+                type="text"
+                placeholder="Enter mobile number"
+                value={this.props.mobile} 
+                onChange={this.props.handleChange} 
               />
             </div>
           )
