@@ -44,6 +44,7 @@ export class Login extends Component {
                 this.getData(user).then((response) => {
                     if (response.status === 200 ) {
                         this.props.validateUser(true);
+                        localStorage.setItem('customerId',this.state.customerId)
                         this.props.history.push('/home')
                     }
                 }).catch(err => {
@@ -96,7 +97,6 @@ export class Login extends Component {
 
     }
     render() {
-        let { t } = this.props
         return (
             <div>
                 <div className="container">
@@ -130,12 +130,12 @@ export class Login extends Component {
                         </div>
                         <div className="form-group row">
                             <div className="col-sm-4 offset-sm-2">
-                                <button type="submit" className="btn btn-primary" onClick={this.handleSubmit}>Login</button>
+                                <button id="submit" type="submit" className="btn btn-primary" onClick={this.handleSubmit}>Login</button>
                             </div>
                         </div>
 
                     </form>
-                    {this.state.alert}
+                 
                 </div>
             </div>
         )

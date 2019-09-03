@@ -132,7 +132,7 @@ export class MasterForm extends Component {
                     deposit: this.state.deposit,
                     occupation: this.state.occupation,
                     mortgageType: this.state.mortgageType,
-                    propertycost: this.state.propertycost
+                    propertyCost: this.state.propertycost
                 }
                 console.log("Customer details", customer)
                 this.getData(customer).then((response) => {
@@ -242,6 +242,7 @@ export class MasterForm extends Component {
             <React.Fragment>
                 <h2>Signup </h2>
                 <p><h4> Step {this.state.currentStep}</h4> </p>
+                <span className="text-danger " ><small>All fields are mandatory</small></span><br></br>
                 <span className="text-danger " ><small>{this.state.depositError}</small></span>
                 <span className="text-danger " ><small>{this.state.occupationError}</small></span>
                 <span className="text-danger " ><small>{this.state.propertycostError}</small></span>

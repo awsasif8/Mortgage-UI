@@ -3,7 +3,6 @@ import './App.css';
 import {withTranslation} from 'react-i18next';
 import { withRouter, HashRouter, Switch, Route } from 'react-router-dom'
 import Header from './Components/Header/Header'
-import Register from './Components/Register/Register';
 import Login from './Components/Login/Login';
 import Home from './Components/Home/Home';
 import Logout from './Components/Logout/Logout';

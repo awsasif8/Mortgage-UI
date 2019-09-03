@@ -1,32 +1,21 @@
 import React, { Component } from 'react'
 import config from '../../config.json'
 import axios from 'axios'
-import './Transaction.css'
+import './Mortgage.css'
+import swal from 'sweetalert';
 
-export class Transaction extends Component {
-    constructor(props) {
+export class Mortgage extends Component {
+    constructor(props){
         super(props);
-        this.state = {
-            transactionAccNo: '',
-            transactionAccBalance: '',
+        this.state={
+            mortgageAccNo:'',
+            mortgageAccBalance:'',
             transactionStatement: [],
             viewStatement: false
         }
         this.handleGetStatment = this.handleGetStatment.bind(this)
     }
-    componentDidMount() {
-        let customerId = localStorage.getItem('customerId')
-        axios.get(`${config.url}/summary/${customerId}`)
-            .then(res => {
-                console.log("res inside component did mount of transaction", res)
-                this.setState({
-                    transactionAccNo: res.data.transactionAccountNumber,
-                    transactionAccBalance: res.data.transactionBalance
-                }, () => {
-                    console.log("all stock after set state", this.state.transactionAccNo)
-                });
-            })
-    }
+
     handleGetStatment(e) {
         console.log("Inside handle get statement")
         e.preventDefault();
@@ -34,26 +23,41 @@ export class Transaction extends Component {
             viewStatement: true
         })
         axios.get(`${config.urlCharan}/statements/MAGGIE290`)
+        .then(res => {
+            console.log("res inside get statemnet", res)
+            this.setState({
+                transactionStatement: res.data.data
+            }, () => {
+                console.log("all stock after set state", this.state.transactionAccNo)
+            });
+        }).catch(err=>{
+            swal(`${err}`)
+        })
+    }
+    componentDidMount(){
+        let customerId=localStorage.getItem('customerId')
+        axios.get(`${config.url}/summary/${customerId}`)
             .then(res => {
-                console.log("res inside get statemnet", res)
-                this.setState({
-                    transactionStatement: res.data.data
-                }, () => {
-                    console.log("all stock after set state", this.state.transactionAccNo)
-                });
+                console.log("res inside component did mount of mortgage", res)
+                    this.setState({
+                        mortgageAccNo: res.data.mortagageAccNumber,
+                        mortgageAccBalance: res.data.mortagageBalance
+                    }, () => {
+                        console.log("all stock after set state", this.state.mortagageAccNo)
+                    });
             })
-
     }
     render() {
         return (
             <div>
-                <section className="balance">
-                    <h6>Transaction Account Number : <span style={{ color: "blue" }}>{this.state.transactionAccNo}</span></h6>
-                    <h6>Transaction Account Balance:<span style={{ color: "blue" }}>{this.state.transactionAccBalance}</span></h6>
+                <section >
+                    <h6>Mortgage Account Number : <span style={{color: "blue"}}>{this.state.mortgageAccNo}</span></h6>
+                    <h6 >Mortgage Account Balance:  <span style={{color: "blue"}}>{this.state.mortgageAccBalance}</span></h6>
                     <br></br>
                     <button type="submit" className="btn btn-primary" onClick={this.handleGetStatment}>Get Statement</button>
                 </section>
                 <br></br>
+
                 <section >
                 {
                     this.state.viewStatement ? (
@@ -96,4 +100,4 @@ export class Transaction extends Component {
     }
 }
 
-export default Transaction
+export default Mortgage
