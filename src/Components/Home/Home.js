@@ -15,27 +15,20 @@ export class Home extends Component {
     render() {
         return (
             <div>
-                {/* <Tabs defaultTab="vertical-tab-one" vertical >
+                <Tabs defaultTab="vertical-tab-one" vertical >
                     <TabList>
-                        <Tab tabFor="vertical-tab-one">My Stock History</Tab>
-                        <Tab tabFor="vertical-tab-two">Trending Stocks</Tab>
-                        <Tab tabFor="vertical-tab-three">My Stock History</Tab>
-                        <Tab tabFor="vertical-tab-four">Trending Stocks</Tab>
+                        <Tab tabFor="vertical-tab-one">Transaction Account Details</Tab>
+                        <Tab tabFor="vertical-tab-two">Mortgage Account Details</Tab>
                     </TabList>
 
                     <TabPanel tabId="vertical-tab-one">
-                        Stock History
+                        <transaction></transaction>
                     </TabPanel>
                     <TabPanel tabId="vertical-tab-two">
                         
                     </TabPanel>
-                    <TabPanel tabId="vertical-tab-three">
-                        
-                    </TabPanel>
-                    <TabPanel tabId="vertical-tab-four">
-                        
-                    </TabPanel> */}
-                {/* </Tabs> */}
+                  
+                    </Tabs>
             </div>
         )
     }

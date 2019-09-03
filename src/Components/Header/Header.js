@@ -23,7 +23,7 @@ class Header extends Component {
                             <span><button className="bt" onClick={() => this.props.redirect('/login', this.props.history)} data-toggle="tooltip" title="Login" >Login</button></span>
                     }
 
-                    <span><Link to="/register" data-toggle="tooltip" title="Register" className="link2">Create Account</Link></span>
+                    {/* <span><Link to="/register" data-toggle="tooltip" title="Register" className="link2">Create Account</Link></span> */}
                     
                     {/* <span><select className="drp" onChange={this.selectedLang}>
                         <option value="en">English</option>

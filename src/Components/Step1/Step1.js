@@ -8,6 +8,7 @@ export class Step1 extends Component {
         // The markup for the Step 1 UI
         return (
             <div className="form-group">
+                <span className="text-danger " ><small>All fields are mandatory</small></span><br></br>
                 <span className="text-danger " ><small>{this.props.propertycostError}</small></span><br></br>
                 <label htmlFor="mortgageType">I'm thinking about</label>
                     <select

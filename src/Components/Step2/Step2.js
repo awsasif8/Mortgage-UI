@@ -23,7 +23,7 @@ export class Step2 extends Component {
                 </select>
 
                 <br></br>
-                <label htmlFor="firstName"></label>
+                <label htmlFor="firstName">First Name</label>
                 <input
                     className="form-control"
                     id="firstName"
@@ -34,7 +34,7 @@ export class Step2 extends Component {
                     onChange={this.props.handleChange} // Prop: Puts data into state
                 />
                 <br></br>
-                <label htmlFor="lastName"></label>
+                <label htmlFor="lastName">Last Name</label>
                 <input
                     className="form-control"
                     id="lastName"
@@ -45,7 +45,7 @@ export class Step2 extends Component {
                     onChange={this.props.handleChange} // Prop: Puts data into state
                 />
                 <br></br>
-                <label htmlFor="dob"></label>
+                <label htmlFor="dob">DOB</label>
                 <input
                     className="form-control"
                     id="dob"

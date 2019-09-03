@@ -31,6 +31,10 @@ class App extends Component {
     this.setState({data});
     console.log(data);
   }
+  logout(){
+    this.props.validateUser(false);
+    localStorage.removeItem('customerId')
+  }
 
   render(){
     return (
@@ -41,7 +45,7 @@ class App extends Component {
              <Route path='/register' exact component={MasterForm} /> 
              <Route path='/home' exact component={Home} /> 
              <Route path='/login' component={()=><Login validateUser={this.validateUser}/>}></Route>
-             <Route path='/logout' component={()=><Logout validateUser={this.validateUser}/>}></Route>
+             <Route path='/logout' component={()=><Logout logout={this.logout}/>}></Route>
           </Switch>    
         </HashRouter>
       </div>

@@ -142,7 +142,7 @@ export class MasterForm extends Component {
                             Your Login ID: ${response.data.customerId} 
                             Your password is: ${response.data.password}
                             Your Mortgage Account Number is: ${response.data.mortgageAcc}
-                            Your Mortgage Account Number is: ${response.data.transactionAcc}`)
+                            Your Transaction Account Number is: ${response.data.transactionAcc}`)
                     }
                 }).catch(err => {
                     swal(`Error in login ${err}`)
