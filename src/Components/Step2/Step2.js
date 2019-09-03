@@ -19,7 +19,7 @@ export class Step2 extends Component {
                     >
                     <option value="">Select</option>
                     <option value="employed">Employed</option>
-                    <option value="business">Private</option>
+                    <option value="business">Business</option>
                 </select>
 
                 <br></br>

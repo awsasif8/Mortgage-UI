@@ -15,7 +15,7 @@ export class Home extends Component {
     render() {
         return (
             <div>
-                <Tabs defaultTab="vertical-tab-one" vertical >
+                {/* <Tabs defaultTab="vertical-tab-one" vertical >
                     <TabList>
                         <Tab tabFor="vertical-tab-one">My Stock History</Tab>
                         <Tab tabFor="vertical-tab-two">Trending Stocks</Tab>
@@ -34,8 +34,8 @@ export class Home extends Component {
                     </TabPanel>
                     <TabPanel tabId="vertical-tab-four">
                         
-                    </TabPanel>
-                </Tabs>
+                    </TabPanel> */}
+                {/* </Tabs> */}
             </div>
         )
     }

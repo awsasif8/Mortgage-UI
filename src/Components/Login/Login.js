@@ -11,8 +11,8 @@ export class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: '',
-            emailError: '',
+            customerId: '',
+            customerIdError: '',
             password: '',
             passwordError: '',
             isValid: false,
@@ -34,25 +34,17 @@ export class Login extends Component {
         this.validate().then((res) => {
             console.log("res", res)
             if (res) {
-                const { email, password } = this.state
+                const { customerId, password } = this.state
                 const user = {
-                    email: email,
+                    customerId: customerId,
                     password: password
                 };
                 console.log(this.props)
-                localStorage.setItem("userId", '1234')
-                 this.props.validateUser(true);
-                 this.props.history.push('/home')
+               
                 this.getData(user).then((response) => {
-                    if (response.status === 200 && response.data.status === "SUCCESS") {
+                    if (response.status === 200 ) {
                         this.props.validateUser(true);
-                        localStorage.setItem("userId", response.data.userId)
-                        this.props.history.push({
-                            pathname: '/admindashboard',
-                            search: '?query=dashboard',
-                            //state:{data: response.data}
-                            state: { data: response.data.roleId }
-                        })
+                        this.props.history.push('/home')
                     }
                 }).catch(err => {
                     swal(`Error in login ${err}`)
@@ -66,7 +58,7 @@ export class Login extends Component {
    
     getData(user) {
         return new Promise((resolve, reject) => {
-            axios.post(`${config.url}/login`, user)
+            axios.post(`${config.url}/user/login`, user)
                 .then(res => {
                     return resolve(res)
                 }).catch(err => {
@@ -79,24 +71,20 @@ export class Login extends Component {
         console.log("Inside validate", this.state)
         let isValid = true;
         const errors = {
-            emailError: '',
+            customerIdError: '',
             passwordError: ''
         }
 
-        if (this.state.email.indexOf('@') !== -1) {
             if (this.state.password.length > 4) {
                 isValid = true;
             } else {
                 isValid = false;
                 errors.passwordError = 'Password should be more than 4 characters'
             }
-        } else {
+       
+        if (this.state.customerId === '' || this.state.password === '') {
             isValid = false;
-            errors.emailError = 'Email Id should be in proper format'
-        }
-        if (this.state.email === '' || this.state.password === '') {
-            isValid = false;
-            errors.emailError = "Email and password are mandatory fields."
+            errors.customerIdError = "Customer Id and password are mandatory fields."
         }
 
         this.setState({
@@ -114,17 +102,17 @@ export class Login extends Component {
                 <div className="container">
                     <h2 style={{ marginLeft: "-5%", marginTop: "1%", color: "orangered" }}>Login</h2>
                     <form style={{ marginLeft: '30%', marginTop: "5%", textAlign: "left" }} >
-                        <span className="text-danger " ><small>{this.state.emailError}</small></span>
+                        <span className="text-danger " ><small>{this.state.customerIdError}</small></span>
                         <span className="text-danger " ><small>{this.state.passwordError}</small></span>
                         <br></br>
                         <div className="form-group row">
-                            <label htmlFor="email" className="col-sm-2 col-form-label " >Email</label>
+                            <label htmlFor="customerId" className="col-sm-2 col-form-label " >Customer Id</label>
                             <div className="col-sm-4" >
                                 <input
-                                    type="email"
+                                    type="customerId"
                                     className="form-control"
-                                    id="email"
-                                    placeholder="Enter Email"
+                                    id="customerId"
+                                    placeholder="Enter Customer Id"
                                     onChange={this.handleChange} />
                             </div>
                         </div>

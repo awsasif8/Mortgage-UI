@@ -13,6 +13,7 @@ export class Step1 extends Component {
                     <select
                         className="form-control"
                         id="mortgageType"
+                        name="mortgageType"
                         onChange={this.props.handleChange} 
                         value={this.props.mortgageType}>
                         <option value="newhome">Buy a new home</option>

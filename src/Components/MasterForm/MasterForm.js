@@ -5,6 +5,7 @@ import Step3 from '../Step3/Step3'
 import './MasterForm.css'
 import config from '../../config.json'
 import axios from 'axios'
+import swal from 'sweetalert'
 export class MasterForm extends Component {
     constructor(props) {
         super(props)
@@ -47,7 +48,6 @@ export class MasterForm extends Component {
         return years_elapsed; 
     }
     validate() {
-        console.log("Age",parseInt(this.get_age(this.state.dob)))
         let isValid = true
         const errors = {
             propertycostError:'',
@@ -122,22 +122,40 @@ export class MasterForm extends Component {
     handleSubmit = (event) => {
         event.preventDefault()
         this.validate().then(res=>{
-            let customer={
-                email: this.state.email,
-                mobile: this.state.mobile,
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                Dob: this.state.dob,
-                occupation: this.state.occupation,
-                mortgageType: this.state.mortgageType,
-                propertycost: this.state.propertycost
-            }
+            if(res){
+                let customer={
+                    email: this.state.email,
+                    mobile: this.state.mobile,
+                    firstName: this.state.firstName,
+                    lastName: this.state.lastName,
+                    dob: this.state.dob,
+                    deposit: this.state.deposit,
+                    occupation: this.state.occupation,
+                    mortgageType: this.state.mortgageType,
+                    propertycost: this.state.propertycost
+                }
+                console.log("Customer details", customer)
+                this.getData(customer).then((response) => {
+                    console.log(response)
+                    if (response.status === 201 ) {
+                       swal(`Congratulations. Your mortgage has been granted .Please find below the details.
+                            Your Login ID: ${response.data.customerId} 
+                            Your password is: ${response.data.password}
+                            Your Mortgage Account Number is: ${response.data.mortgageAcc}
+                            Your Mortgage Account Number is: ${response.data.transactionAcc}`)
+                    }
+                }).catch(err => {
+                    swal(`Error in login ${err}`)
+                });
+    
 
+            }
+            
         })
     }
-    getData(user) {
+    getData(customer) {
         return new Promise((resolve, reject) => {
-            axios.post(`${config.url}/login`, user)
+            axios.post(`${config.url}/register`, customer)
                 .then(res => {
                     return resolve(res)
                 }).catch(err => {
